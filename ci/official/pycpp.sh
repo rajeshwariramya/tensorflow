@@ -30,8 +30,14 @@ fi
 
 if [[ $TFCI_PYCPP_SWAP_TO_BUILD_ENABLE == 1 ]]; then
   tfrun bazel build $TFCI_BAZEL_COMMON_ARGS --profile "$PROFILE_JSON_PATH" --config="${TFCI_BAZEL_TARGET_SELECTING_CONFIG_PREFIX}_pycpp_test"
+  if [ "$TFCI_BAZEL_TARGET_SELECTING_CONFIG_PREFIX" == "linux_cuda" ]; then
+    tfrun bazel build $TFCI_BAZEL_COMMON_ARGS --profile "$PROFILE_JSON_PATH" --config="${TFCI_BAZEL_TARGET_SELECTING_CONFIG_PREFIX}_pycpp_api_test"
+  fi
 else
-  tfrun bazel test $TFCI_BAZEL_COMMON_ARGS --profile "$PROFILE_JSON_PATH"  --config="${TFCI_BAZEL_TARGET_SELECTING_CONFIG_PREFIX}_pycpp_test"
+  tfrun bazel test $TFCI_BAZEL_COMMON_ARGS --profile "$PROFILE_JSON_PATH" --config="${TFCI_BAZEL_TARGET_SELECTING_CONFIG_PREFIX}_pycpp_test"
+  if [ "$TFCI_BAZEL_TARGET_SELECTING_CONFIG_PREFIX" == "linux_cuda" ]; then
+    tfrun bazel test $TFCI_BAZEL_COMMON_ARGS --profile "$PROFILE_JSON_PATH" --config="${TFCI_BAZEL_TARGET_SELECTING_CONFIG_PREFIX}_pycpp_api_test"
+  fi
 fi
 
 if [ "$TFCI_BAZEL_TARGET_SELECTING_CONFIG_PREFIX" != "windows_x86_cpu" ]; then
